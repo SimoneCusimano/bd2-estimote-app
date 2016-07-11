@@ -17,21 +17,19 @@ import android.widget.TextView;
 
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Nearable;
-import com.estimote.sdk.Region;
 import com.estimote.sdk.SystemRequirementsChecker;
 
 import java.util.List;
-import java.util.UUID;
 
-import activitytest.android.com.estimoteandroidapp.dummy.DummyContent;
+import activitytest.android.com.estimoteandroidapp.model.Content;
 
 /**
  * An activity representing a list of Estimotes. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
  * lead to a {@link EstimoteDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
+ * item temperature. On tablets, the activity presents the list of items and
+ * item temperature side-by-side using two vertical panes.
  */
 public class EstimoteListActivity extends AppCompatActivity {
 
@@ -45,7 +43,7 @@ public class EstimoteListActivity extends AppCompatActivity {
 
     private String scanId;
     //private static final UUID ESTIMOTE_PROXIMITY_UUID = UUID.fromString("d0d3fa86-ca76-45ec-9bd9-6af4a91e6443");
-    private BeaconManager beaconManager;
+    private BeaconManager _beaconManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +75,9 @@ public class EstimoteListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        beaconManager = new BeaconManager(this);
+        _beaconManager = new BeaconManager(this);
         Log.d(TAG, "Set nearables listener");
-        beaconManager.setNearableListener(new BeaconManager.NearableListener() {
+        _beaconManager.setNearableListener(new BeaconManager.NearableListener() {
 
             @Override public void onNearablesDiscovered(List<Nearable> nearables) {
                 Log.d(TAG, "Discovered nearables: " + nearables);
@@ -91,9 +89,9 @@ public class EstimoteListActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
 
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+        _beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override public void onServiceReady() {
-                scanId = beaconManager.startNearableDiscovery();
+                scanId = _beaconManager.startNearableDiscovery();
             }
         });
     }
@@ -102,18 +100,18 @@ public class EstimoteListActivity extends AppCompatActivity {
     protected void onStop(){
         super.onStop();
 
-        beaconManager.stopNearableDiscovery(scanId);
+        _beaconManager.stopNearableDiscovery(scanId);
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
 
-        beaconManager.disconnect();
+        _beaconManager.disconnect();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new RecyclerViewAdapter(Content.ESTIMOTES));
     }
 
     @Override
@@ -121,42 +119,39 @@ public class EstimoteListActivity extends AppCompatActivity {
         super.onResume();
 
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
-
     }
 
     @Override
     protected void onPause() {
-
         super.onPause();
     }
 
-    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+    public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Content.Estimote> _estimotes;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
-            mValues = items;
+        public RecyclerViewAdapter(List<Content.Estimote> estimotes) {
+            _estimotes = estimotes;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.estimote_list_content, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.estimote_list_content, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.estimote = _estimotes.get(position);
+            holder.uuidView.setText(_estimotes.get(position).uuid);
+            holder.colorView.setText(_estimotes.get(position).color);
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
+            holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(EstimoteDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(EstimoteDetailFragment.ARG_ESTIMOTE_UUID, holder.estimote.uuid);
                         EstimoteDetailFragment fragment = new EstimoteDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -165,7 +160,7 @@ public class EstimoteListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, EstimoteDetailActivity.class);
-                        intent.putExtra(EstimoteDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(EstimoteDetailFragment.ARG_ESTIMOTE_UUID, holder.estimote.uuid);
 
                         context.startActivity(intent);
                     }
@@ -175,25 +170,25 @@ public class EstimoteListActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return _estimotes.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public final View view;
+            public final TextView uuidView;
+            public final TextView colorView;
+            public Content.Estimote estimote;
 
             public ViewHolder(View view) {
                 super(view);
-                mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                this.view = view;
+                uuidView = (TextView) view.findViewById(R.id.uuid);
+                colorView = (TextView) view.findViewById(R.id.color);
             }
 
             @Override
             public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
+                return super.toString() + " '" + colorView.getText() + "'";
             }
         }
     }
