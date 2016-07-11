@@ -22,7 +22,7 @@ public class EstimoteDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ESTIMOTE_UUID = "item_id";
+    public static final String ARG_ESTIMOTE_IDENTIFIER = "item_id";
 
     private Content.Estimote _estimote;
 
@@ -37,8 +37,8 @@ public class EstimoteDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ESTIMOTE_UUID)) {
-            _estimote = Content.ESTIMOTE_MAP.get(getArguments().getString(ARG_ESTIMOTE_UUID));
+        if (getArguments().containsKey(ARG_ESTIMOTE_IDENTIFIER)) {
+            _estimote = Content.ESTIMOTE_MAP.get(getArguments().getString(ARG_ESTIMOTE_IDENTIFIER));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);

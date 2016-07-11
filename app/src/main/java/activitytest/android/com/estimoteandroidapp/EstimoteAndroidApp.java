@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.EstimoteSDK;
 import com.estimote.sdk.Region;
 
 import java.util.List;
@@ -21,11 +22,20 @@ public class EstimoteAndroidApp extends Application {
     private static final UUID ESTIMOTE_PROXIMITY_UUID = UUID.fromString("d0d3fa86-ca76-45ec-9bd9-6af4a91e6443");
     private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
 
+    private static final String APP_ID = "lodo-marchesi-gmail-com-s--fcu";
+    private static final String APP_TOKEN = "4ff0a7cba332f736b651eace30056fda";
+
+
     private BeaconManager beaconManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //  App ID & App Token can be taken from App section of Estimote Cloud.
+        EstimoteSDK.initialize(getApplicationContext(), APP_ID, APP_TOKEN);
+        // Optional, debug logging.
+        EstimoteSDK.enableDebugLogging(true);
     }
 
     public void showNotification(String title, String message) {

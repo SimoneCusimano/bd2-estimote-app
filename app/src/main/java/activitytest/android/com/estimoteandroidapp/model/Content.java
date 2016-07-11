@@ -45,7 +45,7 @@ public class Content {
     }
 
     /**
-     * An estimote representing a piece of color.
+     * An nearable representing a piece of color.
      */
     public static class Estimote {
         public final String uuid;

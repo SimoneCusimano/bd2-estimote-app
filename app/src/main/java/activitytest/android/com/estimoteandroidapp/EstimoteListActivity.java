@@ -21,8 +21,6 @@ import com.estimote.sdk.SystemRequirementsChecker;
 
 import java.util.List;
 
-import activitytest.android.com.estimoteandroidapp.model.Content;
-
 /**
  * An activity representing a list of Estimotes. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -41,9 +39,11 @@ public class EstimoteListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
 
+
     private String scanId;
     //private static final UUID ESTIMOTE_PROXIMITY_UUID = UUID.fromString("d0d3fa86-ca76-45ec-9bd9-6af4a91e6443");
     private BeaconManager _beaconManager;
+    private View _recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +63,8 @@ public class EstimoteListActivity extends AppCompatActivity {
             }
         });
 
-        View recyclerView = findViewById(R.id.estimote_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        _recyclerView = findViewById(R.id.estimote_list);
+        //setupRecyclerView((RecyclerView) _recyclerView);
 
         if (findViewById(R.id.estimote_detail_container) != null) {
             // The detail container view will be present only in the
@@ -76,11 +75,12 @@ public class EstimoteListActivity extends AppCompatActivity {
         }
 
         _beaconManager = new BeaconManager(this);
-        Log.d(TAG, "Set nearables listener");
+        Log.d(TAG, "Set Nearables listener");
         _beaconManager.setNearableListener(new BeaconManager.NearableListener() {
 
             @Override public void onNearablesDiscovered(List<Nearable> nearables) {
-                Log.d(TAG, "Discovered nearables: " + nearables);
+                Log.d(TAG, "Discovered Nearables: " + nearables);
+                setupRecyclerView((RecyclerView) _recyclerView, nearables);
             }
         });
     }
@@ -110,9 +110,11 @@ public class EstimoteListActivity extends AppCompatActivity {
         _beaconManager.disconnect();
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new RecyclerViewAdapter(Content.ESTIMOTES));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Nearable> nearables) {
+        recyclerView.setAdapter(new RecyclerViewAdapter(nearables));
     }
+
+    //private List<Content.Estimote> buildNearableList(List<Nearable> )
 
     @Override
     protected void onResume() {
@@ -128,10 +130,10 @@ public class EstimoteListActivity extends AppCompatActivity {
 
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-        private final List<Content.Estimote> _estimotes;
+        private final List<Nearable> _nearables;
 
-        public RecyclerViewAdapter(List<Content.Estimote> estimotes) {
-            _estimotes = estimotes;
+        public RecyclerViewAdapter(List<Nearable> nearables) {
+            this._nearables = nearables;
         }
 
         @Override
@@ -142,16 +144,16 @@ public class EstimoteListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.estimote = _estimotes.get(position);
-            holder.uuidView.setText(_estimotes.get(position).uuid);
-            holder.colorView.setText(_estimotes.get(position).color);
+            holder.nearable = _nearables.get(position);
+            holder.typeView.setText(_nearables.get(position).type.toString());
+            holder.colorView.setText(_nearables.get(position).color.toString());
 
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(EstimoteDetailFragment.ARG_ESTIMOTE_UUID, holder.estimote.uuid);
+                        arguments.putString(EstimoteDetailFragment.ARG_ESTIMOTE_IDENTIFIER, holder.nearable.identifier);
                         EstimoteDetailFragment fragment = new EstimoteDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -160,7 +162,7 @@ public class EstimoteListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, EstimoteDetailActivity.class);
-                        intent.putExtra(EstimoteDetailFragment.ARG_ESTIMOTE_UUID, holder.estimote.uuid);
+                        intent.putExtra(EstimoteDetailFragment.ARG_ESTIMOTE_IDENTIFIER, holder.nearable.identifier);
 
                         context.startActivity(intent);
                     }
@@ -170,25 +172,25 @@ public class EstimoteListActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return _estimotes.size();
+            return _nearables.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View view;
-            public final TextView uuidView;
+            public final TextView typeView;
             public final TextView colorView;
-            public Content.Estimote estimote;
+            public Nearable nearable;
 
             public ViewHolder(View view) {
                 super(view);
                 this.view = view;
-                uuidView = (TextView) view.findViewById(R.id.uuid);
+                typeView = (TextView) view.findViewById(R.id.type);
                 colorView = (TextView) view.findViewById(R.id.color);
             }
 
             @Override
             public String toString() {
-                return super.toString() + " '" + colorView.getText() + "'";
+                return super.toString() + " '" + typeView.getText() + "'";
             }
         }
     }

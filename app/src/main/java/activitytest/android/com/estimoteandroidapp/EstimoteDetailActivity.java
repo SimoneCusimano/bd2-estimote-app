@@ -53,8 +53,8 @@ public class EstimoteDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(EstimoteDetailFragment.ARG_ESTIMOTE_UUID,
-                    getIntent().getStringExtra(EstimoteDetailFragment.ARG_ESTIMOTE_UUID));
+            arguments.putString(EstimoteDetailFragment.ARG_ESTIMOTE_IDENTIFIER,
+                    getIntent().getStringExtra(EstimoteDetailFragment.ARG_ESTIMOTE_IDENTIFIER));
             EstimoteDetailFragment fragment = new EstimoteDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
