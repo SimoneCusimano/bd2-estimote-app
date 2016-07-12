@@ -3,6 +3,7 @@ package activitytest.android.com.estimoteandroidapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,13 @@ import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Nearable;
 import com.estimote.sdk.SystemRequirementsChecker;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -32,6 +40,9 @@ import java.util.List;
 public class EstimoteListActivity extends AppCompatActivity {
 
     private String TAG = "EstimoteListActivity";
+    private String ABSOLUTE_API_URL = "http://estimote-api.azurewebsites.net";
+    private String API_TEST_CALL = "/api/test";
+    private String API_ESTIMOTE_CALL = "/api/estimotes";
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -80,8 +91,29 @@ public class EstimoteListActivity extends AppCompatActivity {
 
             @Override public void onNearablesDiscovered(List<Nearable> nearables) {
                 Log.d(TAG, "Discovered Nearables: " + nearables);
+
+                try {
+                    saveDataToServer(nearables);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                /*
+                if(!nearables.isEmpty())
+                {
+                    try
+                    {
+                        saveDataToServer(nearables);
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }*/
+
                 setupRecyclerView((RecyclerView) _recyclerView, nearables);
             }
+
         });
     }
 
@@ -110,10 +142,6 @@ public class EstimoteListActivity extends AppCompatActivity {
         _beaconManager.disconnect();
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Nearable> nearables) {
-        recyclerView.setAdapter(new RecyclerViewAdapter(nearables));
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -124,6 +152,16 @@ public class EstimoteListActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Nearable> nearables) {
+        recyclerView.setAdapter(new RecyclerViewAdapter(nearables));
+    }
+
+    private void saveDataToServer(List<Nearable> nearables) throws IOException {
+        new EstimoteApiTask().execute(new URL(ABSOLUTE_API_URL + API_TEST_CALL));
+
+
     }
 
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {

@@ -28,8 +28,11 @@ public class EstimoteAndroidApp extends Application {
 
         //  App ID & App Token can be taken from App section of Nearable Cloud.
         EstimoteSDK.initialize(getApplicationContext(), APP_ID, APP_TOKEN);
-        // Optional, debug logging.
-        EstimoteSDK.enableDebugLogging(true);
+
+        if (BuildConfig.DEBUG) {
+            // Optional, debug logging.
+            EstimoteSDK.enableDebugLogging(true);
+        }
     }
 
     public void showNotification(String title, String message) {
