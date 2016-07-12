@@ -26,8 +26,8 @@ import java.util.List;
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
  * lead to a {@link EstimoteDetailActivity} representing
- * item temperature. On tablets, the activity presents the list of items and
- * item temperature side-by-side using two vertical panes.
+ * item color. On tablets, the activity presents the list of items and
+ * item color side-by-side using two vertical panes.
  */
 public class EstimoteListActivity extends AppCompatActivity {
 
@@ -41,7 +41,6 @@ public class EstimoteListActivity extends AppCompatActivity {
 
 
     private String scanId;
-    //private static final UUID ESTIMOTE_PROXIMITY_UUID = UUID.fromString("d0d3fa86-ca76-45ec-9bd9-6af4a91e6443");
     private BeaconManager _beaconManager;
     private View _recyclerView;
 
@@ -75,6 +74,7 @@ public class EstimoteListActivity extends AppCompatActivity {
         }
 
         _beaconManager = new BeaconManager(this);
+        _beaconManager.setForegroundScanPeriod(1000,2000);
         Log.d(TAG, "Set Nearables listener");
         _beaconManager.setNearableListener(new BeaconManager.NearableListener() {
 
@@ -114,8 +114,6 @@ public class EstimoteListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new RecyclerViewAdapter(nearables));
     }
 
-    //private List<Content.Estimote> buildNearableList(List<Nearable> )
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -153,7 +151,7 @@ public class EstimoteListActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(EstimoteDetailFragment.ARG_ESTIMOTE_IDENTIFIER, holder.nearable.identifier);
+                        arguments.putParcelable(EstimoteDetailFragment.ARG_NEARABLE, holder.nearable);
                         EstimoteDetailFragment fragment = new EstimoteDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -162,7 +160,7 @@ public class EstimoteListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, EstimoteDetailActivity.class);
-                        intent.putExtra(EstimoteDetailFragment.ARG_ESTIMOTE_IDENTIFIER, holder.nearable.identifier);
+                        intent.putExtra(EstimoteDetailFragment.ARG_NEARABLE, holder.nearable);
 
                         context.startActivity(intent);
                     }

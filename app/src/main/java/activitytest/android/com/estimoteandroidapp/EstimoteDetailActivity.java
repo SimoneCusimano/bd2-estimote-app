@@ -11,9 +11,9 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 /**
- * An activity representing a single Estimote detail screen. This
+ * An activity representing a single Nearable detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
- * item temperature are presented side-by-side with a list of items
+ * item color are presented side-by-side with a list of items
  * in a {@link EstimoteListActivity}.
  */
 public class EstimoteDetailActivity extends AppCompatActivity {
@@ -24,15 +24,6 @@ public class EstimoteDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_estimote_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -53,8 +44,7 @@ public class EstimoteDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(EstimoteDetailFragment.ARG_ESTIMOTE_IDENTIFIER,
-                    getIntent().getStringExtra(EstimoteDetailFragment.ARG_ESTIMOTE_IDENTIFIER));
+            arguments.putParcelable(EstimoteDetailFragment.ARG_NEARABLE, getIntent().getParcelableExtra(EstimoteDetailFragment.ARG_NEARABLE));
             EstimoteDetailFragment fragment = new EstimoteDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -69,7 +59,7 @@ public class EstimoteDetailActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. For
-            // more temperature, see the Navigation pattern on Android Design:
+            // more color, see the Navigation pattern on Android Design:
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //

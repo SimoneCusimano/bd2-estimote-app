@@ -9,10 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import activitytest.android.com.estimoteandroidapp.model.Content;
+import com.estimote.sdk.Nearable;
+
 
 /**
- * A fragment representing a single Estimote detail screen.
+ * A fragment representing a single Nearable detail screen.
  * This fragment is either contained in a {@link EstimoteListActivity}
  * in two-pane mode (on tablets) or a {@link EstimoteDetailActivity}
  * on handsets.
@@ -22,28 +23,27 @@ public class EstimoteDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ESTIMOTE_IDENTIFIER = "item_id";
+    public static final String ARG_NEARABLE = "BD2_Estimote";
 
-    private Content.Estimote _estimote;
+    private Nearable _nearable;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public EstimoteDetailFragment() {
-    }
+    public EstimoteDetailFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ESTIMOTE_IDENTIFIER)) {
-            _estimote = Content.ESTIMOTE_MAP.get(getArguments().getString(ARG_ESTIMOTE_IDENTIFIER));
+        if (getArguments().containsKey(ARG_NEARABLE)) {
+            _nearable = this.getArguments().getParcelable(ARG_NEARABLE);
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(_estimote.color);
+                appBarLayout.setTitle(_nearable.type.toString());
             }
         }
     }
@@ -53,8 +53,9 @@ public class EstimoteDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.estimote_detail, container, false);
 
-        if (_estimote != null) {
-            ((TextView) rootView.findViewById(R.id.estimote_detail)).setText(_estimote.temperature);
+        if (_nearable != null) {
+            ((TextView) rootView.findViewById(R.id.nearable_color)).setText(_nearable.color.toString());
+            ((TextView) rootView.findViewById(R.id.nearable_temperature)).setText(String.valueOf(_nearable.temperature));
         }
 
         return rootView;
