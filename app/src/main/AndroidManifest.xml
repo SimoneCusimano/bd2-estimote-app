@@ -6,14 +6,14 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".EstimoteAndroidApp"
+        android:name="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteAndroidApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".EstimoteListActivity"
+            android:name="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -23,13 +23,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EstimoteDetailActivity"
+            android:name="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteDetailActivity"
             android:label="@string/title_estimote_detail"
-            android:parentActivityName=".EstimoteListActivity"
+            android:parentActivityName="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="activitytest.android.com.estimoteandroidapp.EstimoteListActivity" />
+                android:value="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteListActivity" />
         </activity>
     </application>
 

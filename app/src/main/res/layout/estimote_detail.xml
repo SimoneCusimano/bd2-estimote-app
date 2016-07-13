@@ -14,7 +14,7 @@
             android:layout_weight="0.25"
             android:text="@string/color"
             xmlns:tools="http://schemas.android.com/tools"
-            tools:context="activitytest.android.com.estimoteandroidapp.EstimoteDetailFragment"
+            tools:context="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteDetailFragment"
             style="?android:attr/textAppearanceLarge"
             android:padding="16dp"/>
 
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textIsSelectable="true"
-            tools:context="activitytest.android.com.estimoteandroidapp.EstimoteDetailFragment" />
+            tools:context="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteDetailFragment" />
 
     </LinearLayout>
 
@@ -41,7 +41,7 @@
             android:layout_weight="0.25"
             android:text="@string/temperature"
             xmlns:tools="http://schemas.android.com/tools"
-            tools:context="activitytest.android.com.estimoteandroidapp.EstimoteDetailFragment"
+            tools:context="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteDetailFragment"
             style="?android:attr/textAppearanceLarge"
             android:padding="16dp"
             />
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textIsSelectable="true"
-            tools:context="activitytest.android.com.estimoteandroidapp.EstimoteDetailFragment" />
+            tools:context="android.com.estimoteandroidapp.estimoteandroidapp.EstimoteDetailFragment" />
 
         </LinearLayout>
 
