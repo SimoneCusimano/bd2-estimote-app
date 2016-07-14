@@ -20,7 +20,6 @@ import com.estimote.sdk.Nearable;
 import com.estimote.sdk.SystemRequirementsChecker;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import activitytest.android.com.estimoteandroidapp.R;
@@ -36,9 +35,6 @@ import activitytest.android.com.estimoteandroidapp.R;
 public class EstimoteListActivity extends AppCompatActivity {
 
     private String TAG = "EstimoteListActivity";
-    private String ABSOLUTE_API_URL = "http://estimote-api.azurewebsites.net";
-    private String API_TEST_CALL = "/api/test";
-    private String API_ESTIMOTE_CALL = "/api/estimotes";
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -70,7 +66,6 @@ public class EstimoteListActivity extends AppCompatActivity {
         });
 
         _recyclerView = findViewById(R.id.estimote_list);
-        //setupRecyclerView((RecyclerView) _recyclerView);
 
         if (findViewById(R.id.estimote_detail_container) != null) {
             // The detail container view will be present only in the
@@ -92,7 +87,7 @@ public class EstimoteListActivity extends AppCompatActivity {
                 {
                     try
                     {
-                        saveDataToServer(nearables);
+                        saveData(nearables);
                     }
                     catch (IOException e)
                     {
@@ -102,7 +97,6 @@ public class EstimoteListActivity extends AppCompatActivity {
 
                 setupRecyclerView((RecyclerView) _recyclerView, nearables);
             }
-
         });
     }
 
@@ -147,8 +141,8 @@ public class EstimoteListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new RecyclerViewAdapter(nearables));
     }
 
-    private void saveDataToServer(List<Nearable> nearables) throws IOException {
-        new EstimoteApiTask(nearables).execute(new URL(ABSOLUTE_API_URL + API_ESTIMOTE_CALL));
+    private void saveData(List<Nearable> nearables) throws IOException {
+        new EstimoteApiTask().execute(nearables);
 
 
     }

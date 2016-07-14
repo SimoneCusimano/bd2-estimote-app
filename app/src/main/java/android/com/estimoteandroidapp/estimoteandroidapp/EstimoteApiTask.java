@@ -4,11 +4,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.estimote.sdk.Nearable;
+import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import okhttp3.FormBody;
@@ -17,42 +18,28 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class EstimoteApiTask extends AsyncTask<URL, Integer, Long> {
+public class EstimoteApiTask extends AsyncTask<List<Nearable>, Integer, Long> {
     private static final String TAG = "EstimoteApiTask";
+    private String API_ABSOLUTE_URL = "http://estimote-api.azurewebsites.net";
+    private String API_TEST_CALL = "/api/test";
+    private String API_ESTIMOTE_CALL = "/api/estimotes";
 
-    private List<Nearable> _nearables;
-
-    public EstimoteApiTask(List<Nearable> nearables) {
-        this._nearables = nearables;
-    }
+    private final OkHttpClient client = new OkHttpClient();
 
     @Override
-    protected Long doInBackground(URL... urls) {
+    protected Long doInBackground(List<Nearable>... nearables) {
         int statusCode = -1;
 
-        for (URL url : urls) {
             try {
-                JSONArray jsonArray = new JSONArray(_nearables);
+                Gson gson = new Gson();
+                String json = gson.toJson(nearables);
 
-                OkHttpClient client = new OkHttpClient();
+                statusCode = this.sendData("Estimotes", json);
 
-                RequestBody formBody = new FormBody.Builder()
-                        .add("Estimotes", String.valueOf(jsonArray))
-                        .build();
-
-                Request request = new Request.Builder()
-                        .url(url.toString())
-                        .post(formBody)
-                        .build();
-
-                Response response = client.newCall(request).execute();
-                String rm = response.body().string();
-                Log.d(TAG, rm);
-            } catch (IOException e) {
-                Log.d(TAG, "Error: " + e.getMessage());
             }
-
-        }
+            catch (IOException e) {
+                Log.d(TAG, "Exception message: " + e.getMessage());
+            }
 
         return Long.valueOf(statusCode);
     }
@@ -61,4 +48,27 @@ public class EstimoteApiTask extends AsyncTask<URL, Integer, Long> {
     protected void onPostExecute(Long result) {
         Log.d(TAG, "Result: " + result);
     }
+
+    public int sendData(String key, String value) throws IOException {
+        int responseStatusCode;
+
+        RequestBody formBody = new FormBody.Builder()
+                .add(key, String.valueOf(value))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(API_ABSOLUTE_URL + API_ESTIMOTE_CALL)
+                .post(formBody)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        String responseMessage = response.body().string();
+        responseStatusCode = response.code();
+
+
+        Log.d(TAG, responseMessage);
+
+        return responseStatusCode;
+    }
+
 }
