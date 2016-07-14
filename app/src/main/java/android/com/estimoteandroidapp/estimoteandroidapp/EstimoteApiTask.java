@@ -33,6 +33,7 @@ public class EstimoteApiTask extends AsyncTask<List<Nearable>, Integer, Long> {
             try {
                 Gson gson = new Gson();
                 String json = gson.toJson(nearables);
+                Log.d(TAG, "Sending: " + json);
 
                 statusCode = this.sendData("Estimotes", json);
 

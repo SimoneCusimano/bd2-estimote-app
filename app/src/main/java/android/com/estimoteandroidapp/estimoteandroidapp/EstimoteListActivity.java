@@ -81,7 +81,7 @@ public class EstimoteListActivity extends AppCompatActivity {
         _beaconManager.setNearableListener(new BeaconManager.NearableListener() {
 
             @Override public void onNearablesDiscovered(List<Nearable> nearables) {
-                Log.d(TAG, "Discovered Nearables: " + nearables);
+                Log.d(TAG, "Discovered "+ nearables.size() + " Nearable(s): " + nearables);
 
                 if(!nearables.isEmpty())
                 {
