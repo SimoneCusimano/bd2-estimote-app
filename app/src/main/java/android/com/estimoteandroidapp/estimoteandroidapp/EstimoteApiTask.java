@@ -5,13 +5,17 @@ import android.util.Log;
 
 import com.estimote.sdk.Nearable;
 
-import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class EstimoteApiTask extends AsyncTask<URL, Integer, Long> {
     private static final String TAG = "EstimoteApiTask";
@@ -27,19 +31,25 @@ public class EstimoteApiTask extends AsyncTask<URL, Integer, Long> {
         int statusCode = -1;
 
         for (URL url : urls) {
-            // Making HTTP request
             try {
-                URLConnection connection = url.openConnection();
-                InputStream in = connection.getInputStream();
-                String encoding = connection.getContentEncoding();
-                encoding = encoding == null ? "UTF-8" : encoding;
-                String body = IOUtils.toString(in, encoding);
-                statusCode = ((HttpURLConnection)connection).getResponseCode();
-                Log.d(TAG, body);
-            }
-            catch (Exception ex)
-            {
-                Log.d(TAG, ex.getStackTrace().toString());
+                JSONArray jsonArray = new JSONArray(_nearables);
+
+                OkHttpClient client = new OkHttpClient();
+
+                RequestBody formBody = new FormBody.Builder()
+                        .add("Estimotes", String.valueOf(jsonArray))
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(url.toString())
+                        .post(formBody)
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                String rm = response.body().string();
+                Log.d(TAG, rm);
+            } catch (IOException e) {
+                Log.d(TAG, "Error: " + e.getMessage());
             }
 
         }

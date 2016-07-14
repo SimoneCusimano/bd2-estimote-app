@@ -88,13 +88,6 @@ public class EstimoteListActivity extends AppCompatActivity {
             @Override public void onNearablesDiscovered(List<Nearable> nearables) {
                 Log.d(TAG, "Discovered Nearables: " + nearables);
 
-                try {
-                    saveDataToServer(nearables);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                /*
                 if(!nearables.isEmpty())
                 {
                     try
@@ -105,7 +98,7 @@ public class EstimoteListActivity extends AppCompatActivity {
                     {
                         e.printStackTrace();
                     }
-                }*/
+                }
 
                 setupRecyclerView((RecyclerView) _recyclerView, nearables);
             }
@@ -155,7 +148,7 @@ public class EstimoteListActivity extends AppCompatActivity {
     }
 
     private void saveDataToServer(List<Nearable> nearables) throws IOException {
-        new EstimoteApiTask(nearables).execute(new URL(ABSOLUTE_API_URL + API_TEST_CALL));
+        new EstimoteApiTask(nearables).execute(new URL(ABSOLUTE_API_URL + API_ESTIMOTE_CALL));
 
 
     }

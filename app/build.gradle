@@ -28,4 +28,5 @@ dependencies {
     compile 'com.android.support:design:24.0.0'
     compile 'com.estimote:sdk:0.10.8@aar'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
+    compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
 }
