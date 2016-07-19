@@ -14,8 +14,8 @@ import activitytest.android.com.estimoteandroidapp.BuildConfig;
 public class EstimoteAndroidApp extends Application {
     private String TAG = "EstimoteAndroidApp";
 
-    private static final String APP_ID = "lodo-marchesi-gmail-com-s--fcu";
-    private static final String APP_TOKEN = "4ff0a7cba332f736b651eace30056fda";
+    private static final String APP_ID = "";
+    private static final String APP_TOKEN = "";
 
     @Override
     public void onCreate() {
